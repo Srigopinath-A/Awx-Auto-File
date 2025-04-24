@@ -30,7 +30,6 @@ jobs:
       run: mvn -B package --file Awx-automation/Awx-automation/pom.xml
 
     - name: Publish to GitHub Packages Apache Maven
-      working-directory: Awx-automation/Awx-automation/pom.xml
       run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml
       env:
         GITHUB_TOKEN: ${{ github.token }}
