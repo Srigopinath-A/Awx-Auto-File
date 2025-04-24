@@ -1,12 +1,16 @@
 package com.example.Awx_automation;
 
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+
 import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication( exclude = {DataSourceAutoConfiguration.class}) // if database is not specified error occurs you may use it
+@ComponentScan
 public class AwxAutomationApplication {
 
 	public static void main(String[] args) {
