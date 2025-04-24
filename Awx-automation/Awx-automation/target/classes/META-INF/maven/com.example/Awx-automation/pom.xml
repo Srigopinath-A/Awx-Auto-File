@@ -30,7 +30,7 @@
 	<properties>
 		<java.version>21</java.version>
 		<spring-cloud.version>2024.0.0</spring-cloud.version>
-		<spring-boot.run.main-class>${start-class}</spring-boot.run.main-class>
+		
 	</properties>
 	<dependencies>
 		<dependency>
@@ -114,16 +114,8 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>repackage</id>
-						<goals>
-							<goal>repackage</goal>
-						</goals>
-					</execution>
-				</executions>
 				<configuration>
-				<mainClass>${spring-boot.run.main-class}</mainClass>
+				<mainClass>com.example.awxautomation.AwxAutomationApplication</mainClass>
 					<excludes>
 						<exclude>
 							<groupId>org.projectlombok</groupId>
