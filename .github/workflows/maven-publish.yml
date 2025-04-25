@@ -1,4 +1,4 @@
-name: Maven Package
+=name: Maven Package
 
 on:
   push:
@@ -20,17 +20,16 @@ jobs:
         java-version: '21'
         distribution: 'temurin'
         server-id: github
-        settings-path: ${{ github.workspace }}
 
     - name: Create settings.xml
       run: |
-        cat << EOF > $GITHUB_WORKSPACE/settings.xml
+        cat << 'EOF' > settings.xml
         <settings>
           <servers>
             <server>
               <id>github</id>
-              <username>\${env.GITHUB_ACTOR}</username>
-              <password>\${env.GITHUB_TOKEN}</password>
+              <username>${{ github.actor }}</username>
+              <password>${{ secrets.GITHUB_TOKEN }}</password>
             </server>
           </servers>
         </settings>
@@ -38,9 +37,9 @@ jobs:
 
     - name: Build and Deploy
       run: |
-        mvn clean deploy -s $GITHUB_WORKSPACE/settings.xml \
-          --file Awx-automation/Awx-automation/pom.xml \
-          -DskipTests \
-          -DaltDeploymentRepository=github::default::https://maven.pkg.github.com/Srigopinath-A/Awx-Auto-File
+        mvn -B deploy -s settings.xml \
+          -DrepositoryId=github \
+          -DaltDeploymentRepository=github::default::https://maven.pkg.github.com/Srigopinath-A/Awx-Auto-File \
+          -DskipTests
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

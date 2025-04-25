@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>com.github.Srigopinath-A</groupId>
 	<artifactId>Awx-automation</artifactId>
-	<version>0.0.1</version>
+	<version>0.0.2</version>
 	<name>Awx-automation</name>
 	<description>Demo project for Spring Boot</description>
 	<url>https://github.com/Srigopinath-A/Awx-Auto-File</url>
