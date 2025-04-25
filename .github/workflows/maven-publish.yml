@@ -38,7 +38,7 @@ jobs:
 
     - name: Build and Deploy
       run: |
-        mvn clean deploy -s $GITHUB_WORKSPACE/settings.xml \
+       mvn deploy -X -e -s $GITHUB_WORKSPACE/settings.xml ...
           --file Awx-automation/Awx-automation/pom.xml \
           -DskipTests \
           -DaltDeploymentRepository=github::default::https://maven.pkg.github.com/Srigopinath-A/Awx-Auto-File
