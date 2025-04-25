@@ -15,7 +15,7 @@ jobs:
       with:
         submodules: true
 
-    - name: List files after checkout # Keep this for verification
+    - name: List files after checkout
       run: ls -lR
 
     - name: Set up JDK 21
@@ -26,13 +26,15 @@ jobs:
         cache: maven
 
     - name: Build with Maven
-      working-directory: Awx-automation/Awx-automation # Verify this path is EXACTLY correct
+      # Ensure this working directory is correct
+      working-directory: Awx-automation/Awx-automation
       run: mvn -B package
 
-    # --- Check this step carefully ---
+    # --- Corrected Dependency Graph Step ---
     - name: Update dependency graph
-      # Use a stable tag instead of commit hash
       uses: advanced-security/maven-dependency-submission-action@v4
       with:
-        # Verify this path is EXACTLY correct and matches the working-directory above
-        base-directory: Awx-automation/Awx-automation
+        # <<< --- CHANGE THIS LINE --- >>>
+        directory: Awx-automation/Awx-automation
+        # Ensure the path value itself is still correct
+        # token: ${{ secrets.GITHUB_TOKEN }} # Usually inferred, but can be added if needed
