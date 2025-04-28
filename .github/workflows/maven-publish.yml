@@ -36,5 +36,5 @@ jobs:
 
     - name: Build Application
       run: |
-        mvn clean
+        mvn clean --file Awx-automation/Awx-automation/pom.xml
         mvn -B package --file Awx-automation/Awx-automation/pom.xml
