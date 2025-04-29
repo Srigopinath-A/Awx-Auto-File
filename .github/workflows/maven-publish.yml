@@ -26,15 +26,14 @@ jobs:
     - name: Unit Test
       run: mvn -B test --file Awx-automation/Awx-automation/pom.xml
 
-    # Remove redundant Build Application step if not needed
 
     - name: Build docker image
       uses: docker/build-push-action@v2
       with:
         context: .
-        file: Awx-automation/Awx-automation/Dockerfile  # Corrected parameter
+        file: Awx-automation/Awx-automation/Dockerfile 
         push: false
-        tags: ${{ secrets.DOCKER_LOGIN }}/awx-automation:latest  # Added image name and tag
+        tags: ${{ secrets.DOCKER_LOGIN }}/awx-automation:latest 
 
     - name: Login to Docker hub
       uses: docker/login-action@v2
@@ -46,6 +45,6 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         context: .
-        file: Awx-automation/Awx-automation/Dockerfile  # Corrected parameter
+        file: Awx-automation/Awx-automation/Dockerfile  
         push: true
-        tags: ${{ secrets.DOCKER_LOGIN }}/awx-automation:latest  # Added image name and tag
+        tags: ${{ secrets.DOCKER_LOGIN }}/awx-automation:latest
