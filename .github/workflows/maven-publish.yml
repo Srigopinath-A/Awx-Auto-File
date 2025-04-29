@@ -45,7 +45,7 @@ jobs:
         context: .
         dockerfile: Dockerfile --file Awx-automation/Awx-automation/Dockerfile
         push: false
-        tags: ${{ secrets.DOCKER_LOGIN}}/Awx-auromation:test
+        tags: ${{ secrets.DOCKER_LOGIN}}/
 
     - name: Login to Docker hub
       uses: docker/login-action@v2
@@ -59,4 +59,4 @@ jobs:
         context: .
         dockerfile: Dockerfile --file Awx-automation/Awx-automation/Dockerfile
         push: true
-        tags: ${{ secrets.DOCKER_LOGIN}}/Awx-auromation:test
+        tags: ${{ secrets.DOCKER_LOGIN}}/
