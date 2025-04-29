@@ -33,7 +33,7 @@ jobs:
         context: .
         file: Awx-automation/Awx-automation/Dockerfile 
         push: false
-        tags: ${{ secrets.DOCKER_LOGIN }}/awx-automation:latest 
+        tags: ${{ secrets.DOCKER_LOGIN }}/awx-automation:updated
 
     - name: Login to Docker hub
       uses: docker/login-action@v2
@@ -47,4 +47,4 @@ jobs:
         context: .
         file: Awx-automation/Awx-automation/Dockerfile  
         push: true
-        tags: ${{ secrets.DOCKER_LOGIN }}/awx-automation:latest
+        tags: ${{ secrets.DOCKER_LOGIN }}/awx-automation:updated
