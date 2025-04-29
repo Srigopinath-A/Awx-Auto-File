@@ -38,3 +38,25 @@ jobs:
       run: |
         mvn clean --file Awx-automation/Awx-automation/pom.xml
         mvn -B package --file Awx-automation/Awx-automation/pom.xml
+
+    - name: Build docker image
+      uses: actions/build-push-action@v4
+      with:
+        context: .
+        dockerfile: Dockerfile
+        push: false
+        tags: ${{ secrets.DOCKER_LOGIN}}/Auto-Added:updated
+
+    - name: Login to Docker hub
+      uses: docker/login-action@v4
+      with:
+        username: ${{ secrets.DOCKER_LOGIN }}
+        password: ${{ secrets.DOCKER_TOKEN }}
+
+    - name: push to docker hub
+      uses: docker/build-push-action@v4
+      with:
+        context: .
+        dockerfile: Dockerfile
+        push: true
+        tags: ${{ secrets.DOCKER_LOGIN}}/Auto-Added:updated
