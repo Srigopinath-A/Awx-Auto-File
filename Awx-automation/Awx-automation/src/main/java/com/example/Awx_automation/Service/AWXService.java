@@ -186,51 +186,6 @@ public class AWXService {
 		}
 	}
 
-	public Notification_temp createNotification(Notification_templates notification) {
-		try {
-			// Validate that the notification template has a name and organization ID
-			if (notification.getName() == null || notification.getName().isEmpty()) {
-				throw new IllegalArgumentException("Notification template name is required.");
-			}
-			if (notification.getOrganization() == null) {
-				throw new IllegalArgumentException("Organization ID is required for notification template.");
-			}
-
-			// Log the start of the operation
-			logger.info("Creating notification template: " + notification.getName());
-
-			HttpEntity<Notification_templates> request = new HttpEntity<>(notification, createAuthHeaders());
-
-			// Make the POST request to the AWX API
-			ResponseEntity<Notification_temp> response = restTemplate
-					.postForEntity(awxApiUrl + "/notification_templates/", request, Notification_temp.class);
-
-			// Extract the response body
-			Notification_temp notificationTemp = response.getBody();
-
-			// Save the notification template to the database
-			if (notificationTemp != null) {
-				notification.setId(notificationTemp.getId());
-				notificationtemplate.save(notification);
-				logger.info("Successfully created notification template with ID: " + notificationTemp.getId());
-			} else {
-				logger.warning("Received empty response body while creating notification template.");
-			}
-
-			// Return the created notification template
-			return notificationTemp;
-
-		} catch (IllegalArgumentException e) {
-			// Handle validation errors
-			logger.severe("Validation error while creating notification template: " + e.getMessage());
-			throw e;
-		} catch (Exception e) {
-			// Handle other errors
-			logger.severe("Error creating notification template: " + e.getMessage());
-			throw e;
-		}
-	}
-
 	public JobTemplateResponse createJobTemplate(JobTemplateRequest jobTemplateRequest) {
 		try {
 			HttpEntity<JobTemplateRequest> request = new HttpEntity<>(jobTemplateRequest, createAuthHeaders());
@@ -312,5 +267,43 @@ public class AWXService {
 	        message.setText("Job ID: " + jobId + "\nStatus: " + jobstatus);
 	        mailsender.send(message);
 	    }
+
+		public ResponseEntity<String> createNotificationTemplate(Map<String, Object> templateDetails) {
+			System.out.println("API URL: " + awxApiUrl + "/notification_templates/"); // Debug log
+			HttpHeaders headers = createAuthHeaders();
+			headers.set("Content-Type", "application/json");
+		
+			// Ensure notification_configuration is included in the request
+			if (!templateDetails.containsKey("notification_configuration")) {
+				throw new IllegalArgumentException("notification_configuration is required for email type.");
+			}
+		
+			// Ensure organization is included
+			if (!templateDetails.containsKey("organization") || templateDetails.get("organization") == null) {
+				throw new IllegalArgumentException("Missing required field: organization.");
+			}
+		
+			HttpEntity<Map<String, Object>> request = new HttpEntity<>(templateDetails, headers);
+		
+			// Make the POST request to create the notification template
+			return restTemplate.exchange(
+				awxApiUrl + "/notification_templates/",
+				HttpMethod.POST,
+				request,
+				String.class
+			);
+		}
+
+		public ResponseEntity<String> testNotificationTemplate(Long notificationTemplateId) {
+			String url = String.format("%s/notification_templates/%d/test/", awxApiUrl, notificationTemplateId);
+			HttpHeaders headers = createAuthHeaders(); // Ensure headers include the token
+			HttpEntity<Void> request = new HttpEntity<>(headers);
+		
+			try {
+				return restTemplate.exchange(url, HttpMethod.POST, request, String.class);
+			} catch (Exception e) {
+				throw new RuntimeException("Failed to test notification template: " + e.getMessage(), e);
+			}
+		}
 
 }

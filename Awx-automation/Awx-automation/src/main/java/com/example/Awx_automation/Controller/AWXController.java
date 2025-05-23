@@ -76,11 +76,6 @@ public class AWXController {
         return awxService.createProject(project);
     }
     
-    @PostMapping("/create-notification")
-    public Notification_temp createNotification(@RequestBody Notification_templates notification) {
-    	return awxService.createNotification(notification);
-    }
-
     @PostMapping("/create-job-template")
     public JobTemplateResponse createJobTemplate(@RequestBody JobTemplateRequest jobTemplateRequest) {
         return awxService.createJobTemplate(jobTemplateRequest);
@@ -120,5 +115,43 @@ public class AWXController {
 	        }
 	        throw new IllegalArgumentException("Cannot parse value to Long: " + value);
 	    }
+
+        @PostMapping("/create-notification-template")
+        public ResponseEntity<String> createNotificationTemplate(@RequestBody Map<String, Object> templateDetails) {
+            // Validate required fields for email type
+            if ("email".equalsIgnoreCase((String) templateDetails.get("notification_type"))) {
+                @SuppressWarnings("unchecked")
+                Map<String, Object> config = (Map<String, Object>) templateDetails.get("notification_configuration");
+                if (config == null || !config.containsKey("host") || !config.containsKey("port") ||
+                        !config.containsKey("username") || !config.containsKey("password") ||
+                        !config.containsKey("sender_email") || !config.containsKey("recipient_list")) {
+                    throw new IllegalArgumentException("Missing required fields for email notification type.");
+                }
+    
+                // Add missing fields with default values if not present
+                config.putIfAbsent("use_tls", false); // Default to false
+                config.putIfAbsent("use_ssl", false); // Default to false
+                config.putIfAbsent("sender", config.get("sender_email")); // Use sender_email as sender
+                config.putIfAbsent("recipients", config.get("recipient_list")); // Use recipient_list as recipients
+    
+                // Ensure port is an integer
+                if (!(config.get("port") instanceof Integer)) {
+                    throw new IllegalArgumentException("Configuration field 'port' must be an integer.");
+                }
+            }
+    
+            // Validate organization field
+            if (!templateDetails.containsKey("organization") || templateDetails.get("organization") == null) {
+                throw new IllegalArgumentException("Missing required field: organization.");
+            }
+    
+            // Call the service
+            return awxService.createNotificationTemplate(templateDetails);
+        }
+
+        @PostMapping("/test-notification/{notificationTemplateId}")
+    public ResponseEntity<String> testNotificationTemplate(@PathVariable Long notificationTemplateId) {
+        return awxService.testNotificationTemplate(notificationTemplateId);
+    }
     
 }
